@@ -36,6 +36,17 @@ RCT_EXPORT_METHOD(getVideoCover:(NSString *)videoPath cover:(RCTResponseSenderBl
 
   UIImage*thumbnailImage = thumbnailImageRef ? [[UIImage alloc]initWithCGImage: thumbnailImageRef] : nil;
 
+  NSData *data=UIImageJPEGRepresentation(thumbnailImage, 1.0);
+  if (data.length>300*1024) {
+    if (data.length>1024*1024) {//1M以及以上
+      data=UIImageJPEGRepresentation(thumbnailImage, 0.1);
+    }else if (data.length>512*1024) {//0.5M-1M
+      data=UIImageJPEGRepresentation(thumbnailImage, 0.5);
+    }else if (data.length>300*1024) {//0.25M-0.5M
+      data=UIImageJPEGRepresentation(thumbnailImage, 0.9);
+    }
+  }
+
   NSArray * stringArray = [videoPath componentsSeparatedByString:@"/"];
   NSString * fileName = [stringArray.lastObject componentsSeparatedByString:@"."].firstObject;
 
@@ -45,7 +56,7 @@ RCT_EXPORT_METHOD(getVideoCover:(NSString *)videoPath cover:(RCTResponseSenderBl
   NSString *filePath = [[paths objectAtIndex:0]stringByAppendingPathComponent:
                         [NSString stringWithFormat:@"%@.png",fileName]];  // 保存文件的名称
 
-  BOOL result =[UIImagePNGRepresentation(thumbnailImage) writeToFile:filePath   atomically:YES]; // 保存成功会返回YES
+  BOOL result = [data writeToFile:filePath atomically:YES]; // 保存成功会返回YES
   if (result == YES) {
     return filePath;
   }
