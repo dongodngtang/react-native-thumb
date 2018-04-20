@@ -29,7 +29,7 @@ public class RNReactNativeThumbModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public String getVideoCover(String videoPath) {
+    public void getVideoCover(String videoPath,Callback callback) {
         try {
             MediaMetadataRetriever retriever = new MediaMetadataRetriever();
 //获取网络视频
@@ -39,12 +39,14 @@ public class RNReactNativeThumbModule extends ReactContextBaseJavaModule {
             retriever.setDataSource(videoPath);
             Bitmap bitmap = retriever.getFrameAtTime();
             FileOutputStream outStream = null;
-            String localThumb = reactContext.getExternalCacheDir().getAbsolutePath() + "/" + System.currentTimeMillis() + ".jpg";
+            final String localThumb = reactContext.getExternalCacheDir().getAbsolutePath() + "/" + System.currentTimeMillis() + ".jpg";
             outStream = new FileOutputStream(new File(localThumb));
             bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outStream);
             outStream.close();
             retriever.release();
-            return localThumb;
+            callback.invoke(new Object(){
+                private String image_path = localThumb;
+            });
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -52,7 +54,5 @@ public class RNReactNativeThumbModule extends ReactContextBaseJavaModule {
         } catch (Exception err) {
             err.printStackTrace();
         }
-
-        return "";
     }
 }
