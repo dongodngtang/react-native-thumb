@@ -1,6 +1,12 @@
+import {NativeModules} from 'react-native';
 
-import { NativeModules } from 'react-native';
+const {RNReactNativeThumb} = NativeModules;
 
-const { RNReactNativeThumb } = NativeModules;
+export default class Thumb {
 
-export default RNReactNativeThumb;
+    static getVideoCover(path) {
+        RNReactNativeThumb.getVideoCover(path)
+    }
+}
+
+
