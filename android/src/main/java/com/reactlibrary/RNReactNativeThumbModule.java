@@ -41,12 +41,10 @@ public class RNReactNativeThumbModule extends ReactContextBaseJavaModule {
             FileOutputStream outStream = null;
             final String localThumb = reactContext.getExternalCacheDir().getAbsolutePath() + "/" + System.currentTimeMillis() + ".jpg";
             outStream = new FileOutputStream(new File(localThumb));
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 70, outStream);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 30, outStream);
             outStream.close();
             retriever.release();
-            callback.invoke(new Object(){
-                private String image_path = localThumb;
-            });
+            callback.invoke(localThumb);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
